@@ -1,0 +1,9 @@
+server:
+  port: 9192
+
+spring:
+  cloud:
+    stream:
+      bindings:
+        output:
+          destination: payment
