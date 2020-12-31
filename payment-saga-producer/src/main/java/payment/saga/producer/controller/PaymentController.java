@@ -21,8 +21,7 @@ public class PaymentController {
 
     @PostMapping("/publish")
     public ResponseEntity<Payment> publishPayment(@RequestBody Payment payment) {
-        output.send(
-                MessageBuilder.withPayload(payment).build());
+        output.send(MessageBuilder.withPayload(payment).build());
         return ResponseEntity.ok(payment);
     }
 }
