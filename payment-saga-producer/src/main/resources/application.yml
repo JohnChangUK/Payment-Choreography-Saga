@@ -4,9 +4,17 @@ server:
 spring:
   cloud:
     stream:
+      function:
+        definition: orderEventPublisher; orderEventSubscriber; paymentEventSubscriber
       bindings:
-        output:
-          destination: payment
+        orderEventPublisher-out-0:
+          destination: order-events
+        orderEventProcessor-in-0:
+          destination: order-events
+        orderEventProcessor-out-0:
+          destination: payment-events
+        paymentEventConsumer-in-0:
+          destination: payment-events
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver

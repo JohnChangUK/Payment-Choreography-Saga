@@ -1,4 +1,4 @@
-package payment.saga.producer.paymentservice.eventhandlers;
+package payment.saga.producer.eventhandler;
 
 import org.springframework.stereotype.Service;
 import payment.saga.producer.enums.PaymentStatus;
@@ -22,14 +22,15 @@ public class OrderEventProcessorService {
         userMap.put(5, 1000);
     }
 
-    public PaymentEvent processOrderEvent(OrderEvent orderEvent){
+    public PaymentEvent handleOrderEvent(OrderEvent orderEvent) {
+        System.out.println("processOrderEvent: " + orderEvent);
         var price = orderEvent.getPrice();
         var creditLimit = userMap.get(orderEvent.getUserId());
         PaymentEvent paymentEvent = new PaymentEvent(orderEvent.getOrderId());
-        if(creditLimit >= price){
+        if (creditLimit >= price) {
             paymentEvent.setStatus(PaymentStatus.APPROVED);
             userMap.computeIfPresent(orderEvent.getUserId(), (k, v) -> v - price);
-        }else{
+        } else {
             paymentEvent.setStatus(PaymentStatus.REJECTED);
         }
         return paymentEvent;

@@ -17,32 +17,35 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     // product price map
-    private static final Map<Integer, Integer> PRODUCT_PRICE =  Map.of(
+    private static final Map<Integer, Integer> PRODUCT_PRICE = Map.of(
             1, 100,
             2, 200,
             3, 300
     );
 
-    @Autowired
-    private PurchaseOrderRepository purchaseOrderRepository;
+    private final PurchaseOrderRepository purchaseOrderRepository;
+    private final OrderEventHandler orderEventHandler;
 
     @Autowired
-    private OrderEventHandler orderEventHandler;
+    public OrderService(PurchaseOrderRepository purchaseOrderRepository, OrderEventHandler orderEventHandler) {
+        this.purchaseOrderRepository = purchaseOrderRepository;
+        this.orderEventHandler = orderEventHandler;
+    }
 
-    public PurchaseOrder createOrder(OrderRequestDTO orderRequestDTO){
+    public PurchaseOrder createOrder(OrderRequestDTO orderRequestDTO) {
         PurchaseOrder purchaseOrder = this.purchaseOrderRepository.save(this.dtoToEntity(orderRequestDTO));
         this.orderEventHandler.raiseOrderCreatedEvent(purchaseOrder);
         return purchaseOrder;
     }
 
     public List<OrderResponseDTO> getAll() {
-        return this.purchaseOrderRepository.findAll()
-                                .stream()
-                                .map(this::entityToDto)
-                                .collect(Collectors.toList());
+        return purchaseOrderRepository.findAll()
+                .stream()
+                .map(this::entityToDto)
+                .collect(Collectors.toList());
     }
 
-    private PurchaseOrder dtoToEntity(final OrderRequestDTO dto){
+    private PurchaseOrder dtoToEntity(final OrderRequestDTO dto) {
         PurchaseOrder purchaseOrder = new PurchaseOrder();
         purchaseOrder.setProductId(dto.getProductId());
         purchaseOrder.setUserId(dto.getUserId());
@@ -51,7 +54,7 @@ public class OrderService {
         return purchaseOrder;
     }
 
-    private OrderResponseDTO entityToDto(final PurchaseOrder purchaseOrder){
+    private OrderResponseDTO entityToDto(final PurchaseOrder purchaseOrder) {
         OrderResponseDTO dto = new OrderResponseDTO();
         dto.setId(purchaseOrder.getId());
         dto.setProductId(purchaseOrder.getProductId());

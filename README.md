@@ -1,11 +1,15 @@
 ## Saga Pattern - Payment Microservices
 
-### To start ZooKeeper and Kafka Brokers
+### Implemented with 
+- Spring Cloud Stream with Apache Kafka Binder
+- Reactive Spring
+
+#### To start ZooKeeper and Kafka Brokers
 ```
 cd docker
 ```
 
-run 
+- #### Run 
 ```
 docker-compose up
 ```
