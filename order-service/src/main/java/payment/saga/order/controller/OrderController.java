@@ -3,9 +3,9 @@ package payment.saga.order.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import payment.saga.order.dto.Order;
 import payment.saga.order.model.OrderPurchase;
@@ -35,11 +35,11 @@ public class OrderController {
 
     @GetMapping(path = "orders/all/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<OrderPurchase> getAllOrdersStream() {
-        return orderService.getAll();
+        return orderService.reactiveGetAll();
     }
 
     @GetMapping("orders/{id}")
-    public Mono<OrderPurchase> getOrderById(@RequestParam Integer id) {
+    public Mono<OrderPurchase> getOrderById(@PathVariable Integer id) {
         return orderService.getOrderById(id);
     }
 

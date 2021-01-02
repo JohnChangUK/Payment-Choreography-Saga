@@ -11,22 +11,22 @@ import java.util.Map;
 @Component
 public class OrderPurchaseEventHandler {
 
-    public static final Map<Integer, Integer> userMap = new HashMap<>();
+    public static final Map<Integer, Integer> userBalance = new HashMap<>();
 
     static {
-        userMap.put(1, 100);
-        userMap.put(2, 500);
-        userMap.put(3, 1000);
+        userBalance.put(1, 100);
+        userBalance.put(2, 500);
+        userBalance.put(3, 1000);
     }
 
     public PaymentEvent process(OrderPurchaseEvent orderPurchaseEvent) {
         Integer price = orderPurchaseEvent.getPrice();
         Integer userId = orderPurchaseEvent.getUserId();
-        Integer creditLimit = userMap.get(userId);
+        Integer creditLimit = userBalance.get(userId);
         PaymentEvent paymentEvent = new PaymentEvent(orderPurchaseEvent.getOrderId());
         if (creditLimit >= price) {
             paymentEvent.setStatus(PaymentStatus.APPROVED);
-            userMap.computeIfPresent(userId, (k, v) -> v - price);
+            userBalance.computeIfPresent(userId, (k, v) -> v - price);
         } else {
             paymentEvent.setStatus(PaymentStatus.REJECTED);
         }
