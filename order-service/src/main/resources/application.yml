@@ -1,0 +1,26 @@
+server:
+  port: 9192
+
+spring:
+  cloud:
+    stream:
+      function:
+        definition: orderEventPublisher;orderPurchaseEventProcessor;
+      bindings:
+        orderEventPublisher-out-0:
+          destination: orders
+        orderPurchaseEventProcessor-in-0:
+          destination: orders
+        orderPurchaseEventProcessor-out-0:
+          destination: payments
+  datasource:
+    url: jdbc:h2:mem:mydb;DB_CLOSE_DELAY=-1
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.H2Dialect
+    database: H2
+    generate-ddl: true

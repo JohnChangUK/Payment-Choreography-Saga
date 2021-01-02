@@ -1,0 +1,23 @@
+server:
+  port: 9191
+
+spring:
+  cloud:
+    stream:
+      function:
+        definition: paymentEventSubscriber
+      bindings:
+        paymentEventSubscriber-in-0:
+          destination: payments
+  datasource:
+    url: jdbc:h2:tcp://localhost:9090/mem:mydb;DB_CLOSE_DELAY=-1
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+    maximum-pool-size: 100
+  jpa:
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.H2Dialect
+    database: H2
+    generate-ddl: true
