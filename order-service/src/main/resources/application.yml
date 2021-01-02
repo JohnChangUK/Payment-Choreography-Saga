@@ -18,6 +18,7 @@ spring:
     driverClassName: org.h2.Driver
     username: sa
     password:
+    maximum-pool-size: 100
   jpa:
     hibernate:
       ddl-auto: create

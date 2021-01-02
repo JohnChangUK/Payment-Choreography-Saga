@@ -1,15 +1,17 @@
 package payment.saga.order.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import payment.saga.order.dto.Order;
 import payment.saga.order.model.OrderPurchase;
 import payment.saga.order.service.OrderService;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 public class OrderController {
@@ -22,13 +24,23 @@ public class OrderController {
     }
 
     @PostMapping("orders/create")
-    public OrderPurchase createOrder(@RequestBody Order order){
+    public Mono<OrderPurchase> createOrder(@RequestBody Order order) {
         return orderService.createOrder(order);
     }
 
     @GetMapping("orders/all")
-    public List<OrderPurchase> getAllOrders(){
+    public Flux<OrderPurchase> getAllOrders() {
         return orderService.getAll();
+    }
+
+    @GetMapping(path = "orders/all/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<OrderPurchase> getAllOrdersStream() {
+        return orderService.getAll();
+    }
+
+    @GetMapping("orders/{id}")
+    public Mono<OrderPurchase> getOrderById(@RequestParam Integer id) {
+        return orderService.getOrderById(id);
     }
 
 }
