@@ -20,9 +20,9 @@ import java.util.Map;
 public class OrderService {
 
     private static final Map<Integer, Integer> PRODUCT_PRICES = Map.of(
-            1, 100,
-            2, 200,
-            3, 300
+            1, 50,
+            2, 100,
+            3, 150
     );
 
     private final OrderPurchaseRepository orderPurchaseRepository;

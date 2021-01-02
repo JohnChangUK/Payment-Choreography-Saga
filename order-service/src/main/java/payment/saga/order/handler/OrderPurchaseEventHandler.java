@@ -22,13 +22,13 @@ public class OrderPurchaseEventHandler {
     public PaymentEvent process(OrderPurchaseEvent orderPurchaseEvent) {
         Integer price = orderPurchaseEvent.getPrice();
         Integer userId = orderPurchaseEvent.getUserId();
-        Integer creditLimit = userBalance.get(userId);
+        Integer balance = userBalance.get(userId);
         PaymentEvent paymentEvent = new PaymentEvent(orderPurchaseEvent.getOrderId());
-        if (creditLimit >= price) {
+        if (balance >= price) {
             paymentEvent.setStatus(PaymentStatus.APPROVED);
             userBalance.computeIfPresent(userId, (k, v) -> v - price);
         } else {
-            paymentEvent.setStatus(PaymentStatus.REJECTED);
+            paymentEvent.setStatus(PaymentStatus.DECLINED);
         }
         return paymentEvent;
     }

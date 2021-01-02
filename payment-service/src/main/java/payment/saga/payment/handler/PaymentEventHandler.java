@@ -2,14 +2,16 @@ package payment.saga.payment.handler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import payment.saga.payment.enums.OrderStatus;
-import payment.saga.payment.enums.PaymentStatus;
 import payment.saga.payment.model.PaymentEvent;
 import payment.saga.payment.repository.OrderPurchaseRepository;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
 import javax.transaction.Transactional;
+
+import static payment.saga.payment.enums.OrderStatus.ORDER_COMPLETED;
+import static payment.saga.payment.enums.OrderStatus.ORDER_FAILED;
+import static payment.saga.payment.enums.PaymentStatus.APPROVED;
 
 @Component
 public class PaymentEventHandler {
@@ -30,9 +32,9 @@ public class PaymentEventHandler {
         Mono.fromRunnable(
                 () -> orderPurchaseRepository.findById(paymentEvent.getOrderId())
                         .ifPresent(order -> {
-                            order.setStatus(PaymentStatus.APPROVED.equals(paymentEvent.getStatus())
-                                    ? OrderStatus.ORDER_COMPLETED
-                                    : OrderStatus.ORDER_FAILED);
+                            order.setStatus(APPROVED.equals(paymentEvent.getStatus())
+                                    ? ORDER_COMPLETED
+                                    : ORDER_FAILED);
                             orderPurchaseRepository.save(order);
                         }))
                 .subscribeOn(jdbcScheduler)
