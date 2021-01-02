@@ -17,7 +17,30 @@ docker-compose up
 ### Alternatively run Kafka locally by download binaries
 #### Kafka Binary Distribution [Download](http://apachemirror.wuchna.com/kafka/2.3.1).
 
-#### The Order Service application takes in an `Order` as a request,
+#### Kafka Docker
+- Once the Kafka Docker containers are running, go onto `localhost:9000` and create a cluster `Click 'Add Cluster'` with any name e.g. `payment-saga`.
+- Under `Cluster Zookeeper Hosts` enter `zoo:2181`
+### Topics
+- There are 2 topics which the Order and Payment Services use; these must be created before starting both applications.
+```
+- orders
+- payments
+```
+
+#### Run
+- Run the Order Service application first, this spins up the in memory H2 database which the Payment Service depends on. `(Shared Database)`
+- Run the Payment Service application second
+- Make a POST Request to `localhost:9192/orders/create` with request body: 
+```
+{
+    "userId": 1,
+    "productId": 1
+}
+```
+- Make a GET Request to `localhost:9192/orders/all` and see the order status updated
+
+#### Data Flow
+- The Order Service application takes in an `Order` as a request,
 creates and sends an `OrderPurchaseEvent` which is processed by `OrderPurchaseEventHandler`.
 A `PaymentEvent` is emitted, which the `PaymentEventHandler` in the Payment Service application
 listens for on the Kafka Queue, topic `payments`.
