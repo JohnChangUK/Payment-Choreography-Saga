@@ -3,6 +3,9 @@
 ### Implemented with 
 - Spring Cloud Stream with Apache Kafka Binder
 - Reactive Spring
+- Using reactive programming to return `Flux` from the blocking JDBC API.
+
+The point is to have a dedicated, well-tuned thread pool and isolate the blocking code there.
 
 #### To start ZooKeeper and Kafka Brokers
 ```
