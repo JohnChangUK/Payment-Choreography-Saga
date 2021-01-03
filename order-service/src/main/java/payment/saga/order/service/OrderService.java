@@ -52,7 +52,6 @@ public class OrderService {
 
     public Flux<List<OrderPurchase>> reactiveGetAll() {
         Flux<Long> interval = Flux.interval(Duration.ofMillis(2000));
-        interval.subscribe((i) -> orderPurchaseRepository.findAll());
         Flux<List<OrderPurchase>> orderPurchaseFlux = Flux.fromStream(
                 Stream.generate(orderPurchaseRepository::findAll));
         return Flux.zip(interval, orderPurchaseFlux)
