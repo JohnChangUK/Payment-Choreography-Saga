@@ -36,9 +36,9 @@ public class TransactionService {
 
     public Flux<List<Transaction>> reactiveGetAll() {
         Flux<Long> interval = Flux.interval(Duration.ofMillis(2000));
-        Flux<List<Transaction>> orderPurchaseFlux = Flux.fromStream(
+        Flux<List<Transaction>> transactionFlux = Flux.fromStream(
                 Stream.generate(transactionRepository::findAll));
-        return Flux.zip(interval, orderPurchaseFlux)
+        return Flux.zip(interval, transactionFlux)
                 .map(Tuple2::getT2);
     }
 
