@@ -71,7 +71,7 @@ public class OrderService {
                 .setProductId(order.getProductId())
                 .setUserId(order.getUserId())
                 .setPrice(PRODUCT_PRICES.get(order.getProductId()))
-                .setStatus(OrderStatus.ORDER_CREATED);
+                .setStatus(OrderStatus.CREATED);
     }
 
 }

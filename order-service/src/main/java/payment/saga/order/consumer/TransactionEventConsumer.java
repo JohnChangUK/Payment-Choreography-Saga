@@ -8,8 +8,8 @@ import payment.saga.order.repository.OrderPurchaseRepository;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
-import static payment.saga.order.enums.OrderStatus.ORDER_COMPLETED;
-import static payment.saga.order.enums.OrderStatus.ORDER_FAILED;
+import static payment.saga.order.enums.OrderStatus.COMPLETED;
+import static payment.saga.order.enums.OrderStatus.FAILED;
 import static payment.saga.order.enums.TransactionStatus.SUCCESSFUL;
 
 @Component
@@ -39,8 +39,8 @@ public class TransactionEventConsumer implements EventConsumer<TransactionEvent>
 
     private void setStatus(TransactionEvent transactionEvent, OrderPurchase order) {
         order.setStatus(SUCCESSFUL.equals(transactionEvent.getStatus())
-                ? ORDER_COMPLETED
-                : ORDER_FAILED);
+                ? COMPLETED
+                : FAILED);
     }
 
 }
