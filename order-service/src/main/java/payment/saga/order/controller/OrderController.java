@@ -13,6 +13,8 @@ import payment.saga.order.service.OrderService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @RestController
 public class OrderController {
 
@@ -34,7 +36,7 @@ public class OrderController {
     }
 
     @GetMapping(path = "orders/all/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<OrderPurchase> getAllOrdersStream() {
+    public Flux<List<OrderPurchase>> getAllOrdersStream() {
         return orderService.reactiveGetAll();
     }
 

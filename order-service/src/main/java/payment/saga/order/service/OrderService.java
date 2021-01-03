@@ -12,18 +12,15 @@ import payment.saga.order.repository.OrderPurchaseRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
+import reactor.util.function.Tuple2;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Service
 public class OrderService {
-
-    private static final Map<Integer, Integer> PRODUCT_PRICES = Map.of(
-            1, 50,
-            2, 100,
-            3, 150
-    );
 
     private final OrderPurchaseRepository orderPurchaseRepository;
     private final OrderPurchaseHandler orderPurchaseHandler;
@@ -52,10 +49,13 @@ public class OrderService {
                 .subscribeOn(jdbcScheduler);
     }
 
-    public Flux<OrderPurchase> reactiveGetAll() {
-        return Flux.interval(Duration.ofMillis(5000))
-                .onBackpressureDrop()
-                .flatMap(x -> Flux.fromIterable(orderPurchaseRepository.findAll()));
+    public Flux<List<OrderPurchase>> reactiveGetAll() {
+        Flux<Long> interval = Flux.interval(Duration.ofMillis(2000));
+        interval.subscribe((i) -> orderPurchaseRepository.findAll());
+        Flux<List<OrderPurchase>> orderPurchaseFlux = Flux.fromStream(
+                Stream.generate(orderPurchaseRepository::findAll));
+        return Flux.zip(interval, orderPurchaseFlux)
+                .map(Tuple2::getT2);
     }
 
     public Mono<OrderPurchase> getOrderById(Integer id) {
@@ -73,4 +73,10 @@ public class OrderService {
                 .setPrice(PRODUCT_PRICES.get(order.getProductId()))
                 .setStatus(OrderStatus.ORDER_CREATED);
     }
+
+    private static final Map<Integer, Integer> PRODUCT_PRICES = Map.of(
+            1, 50,
+            2, 100,
+            3, 150
+    );
 }
