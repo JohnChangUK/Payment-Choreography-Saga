@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import payment.saga.order.dto.Order;
+import payment.saga.order.model.Order;
 import payment.saga.order.model.OrderPurchase;
 import payment.saga.order.service.OrderService;
 import reactor.core.publisher.Flux;

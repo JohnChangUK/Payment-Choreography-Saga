@@ -1,4 +1,4 @@
-package payment.saga.order.handler;
+package payment.saga.order.consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -7,16 +7,16 @@ import payment.saga.order.model.OrderPurchaseEvent;
 import reactor.core.publisher.Sinks;
 
 @Component
-public class OrderPurchaseHandler {
+public class OrderPurchaseConsumer implements EventConsumer<OrderPurchase> {
 
     private final Sinks.Many<OrderPurchaseEvent> sink;
 
     @Autowired
-    public OrderPurchaseHandler(Sinks.Many<OrderPurchaseEvent> sink) {
+    public OrderPurchaseConsumer(Sinks.Many<OrderPurchaseEvent> sink) {
         this.sink = sink;
     }
 
-    public void createOrderPurchaseEvent(OrderPurchase orderPurchase) {
+    public void process(OrderPurchase orderPurchase) {
         OrderPurchaseEvent orderPurchaseEvent = new OrderPurchaseEvent()
                 .setUserId(orderPurchase.getUserId())
                 .setOrderId(orderPurchase.getId())

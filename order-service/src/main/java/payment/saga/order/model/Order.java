@@ -1,4 +1,4 @@
-package payment.saga.order.dto;
+package payment.saga.order.model;
 
 import lombok.Data;
 

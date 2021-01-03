@@ -5,14 +5,12 @@ spring:
   cloud:
     stream:
       function:
-        definition: orderEventPublisher;orderPurchaseEventProcessor;
+        definition: orderEventPublisher;transactionEventProcessor;
       bindings:
         orderEventPublisher-out-0:
           destination: orders
-        orderPurchaseEventProcessor-in-0:
-          destination: orders
-        orderPurchaseEventProcessor-out-0:
-          destination: payments
+        transactionEventProcessor-in-0:
+          destination: transactions
   datasource:
     url: jdbc:h2:mem:mydb;DB_CLOSE_DELAY=-1
     driverClassName: org.h2.Driver

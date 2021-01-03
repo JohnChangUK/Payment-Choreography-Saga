@@ -24,15 +24,15 @@ docker-compose up
 - Once the Kafka Docker containers are running, go onto `localhost:9000` and create a cluster `Click 'Add Cluster'` with any name e.g. `payment-saga`.
 - Under `Cluster Zookeeper Hosts` enter `zoo:2181`
 ### Topics
-- There are 2 topics which the Order and Payment Services use; these must be created before starting both applications.
+- There are 3 topics which the Order and Payment Services use; these must be created before starting both applications.
 ```
 - orders
 - payments
+- transactions
 ```
 
 #### Run
-- Run the Order Service application first, this spins up the in memory H2 database which the Payment Service depends on. `(Shared Database)`
-- Run the Payment Service application second
+- Run the Order Service and the Payment Service application
 - Make a POST Request to `localhost:9192/orders/create` with request body: 
 ```
 {
@@ -44,9 +44,12 @@ docker-compose up
 
 #### Data Flow
 - The Order Service application takes in an `Order` as a request,
-which creates and sends an `OrderPurchaseEvent` to the Kafka topic `orders` which is processed by `OrderPurchaseEventHandler`.
+which creates and sends an `OrderPurchaseEvent` to the Kafka topic `orders` which is processed by `OrderPurchaseEventHandler` in the payment service.
 - `OrderPurchaseEventHandler` processes the event and calculates if user has enough credit. If so,
 it sets the generated `PaymentEvent` status to `APPROVED`, otherwise `DECLINED`.
 - A `PaymentEvent` is emitted to the Kafka topic `payments`, which the `PaymentEventHandler` in the Payment Service application
 listens for.
-- If the `PaymentEvent` status is `APPROVED`, it saves the order as `ORDER_COMPLETED`, else `ORDER_FAILED`
+- If the `PaymentEvent` status is `APPROVED`, it saves the transaction in the `TransactionRepository`.
+A `TransactionEvent` is emitted to the `transactions` topic.
+- The `TransactionEventConsumer` reads this in the order service, if successful, the `OrderRepository` saves this as 
+`ORDER_COMPLETED`, else `ORDER_FAILED`

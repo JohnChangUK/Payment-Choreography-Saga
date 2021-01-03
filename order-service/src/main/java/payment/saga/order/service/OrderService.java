@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import payment.saga.order.dto.Order;
+import payment.saga.order.consumer.OrderPurchaseConsumer;
 import payment.saga.order.enums.OrderStatus;
-import payment.saga.order.handler.OrderPurchaseHandler;
+import payment.saga.order.model.Order;
 import payment.saga.order.model.OrderPurchase;
 import payment.saga.order.repository.OrderPurchaseRepository;
 import reactor.core.publisher.Flux;
@@ -24,23 +24,23 @@ import static payment.saga.order.util.Utils.PRODUCT_PRICES;
 public class OrderService {
 
     private final OrderPurchaseRepository orderPurchaseRepository;
-    private final OrderPurchaseHandler orderPurchaseHandler;
+    private final OrderPurchaseConsumer orderPurchaseConsumer;
     private final Scheduler jdbcScheduler;
 
     @Autowired
     public OrderService(
             OrderPurchaseRepository orderPurchaseRepository,
-            OrderPurchaseHandler orderPurchaseHandler,
+            OrderPurchaseConsumer orderPurchaseConsumer,
             Scheduler jdbcScheduler) {
         this.orderPurchaseRepository = orderPurchaseRepository;
-        this.orderPurchaseHandler = orderPurchaseHandler;
+        this.orderPurchaseConsumer = orderPurchaseConsumer;
         this.jdbcScheduler = jdbcScheduler;
     }
 
     public Mono<OrderPurchase> createOrder(Order order) {
         OrderPurchase orderPurchase = getOrderPurchase(order);
         OrderPurchase savedOrderPurchase = orderPurchaseRepository.save(orderPurchase);
-        orderPurchaseHandler.createOrderPurchaseEvent(orderPurchase);
+        orderPurchaseConsumer.process(orderPurchase);
         return Mono.just(savedOrderPurchase);
     }
 

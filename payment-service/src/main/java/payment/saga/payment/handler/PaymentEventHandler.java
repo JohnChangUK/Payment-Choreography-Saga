@@ -3,42 +3,46 @@ package payment.saga.payment.handler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import payment.saga.payment.model.PaymentEvent;
-import payment.saga.payment.repository.OrderPurchaseRepository;
+import payment.saga.payment.model.Transaction;
+import payment.saga.payment.model.TransactionEvent;
+import payment.saga.payment.repository.TransactionRepository;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
 import javax.transaction.Transactional;
 
-import static payment.saga.payment.enums.OrderStatus.ORDER_COMPLETED;
-import static payment.saga.payment.enums.OrderStatus.ORDER_FAILED;
 import static payment.saga.payment.enums.PaymentStatus.APPROVED;
+import static payment.saga.payment.enums.TransactionStatus.SUCCESSFUL;
+import static payment.saga.payment.enums.TransactionStatus.UNSUCCESSFUL;
 
 @Component
-public class PaymentEventHandler {
+public class PaymentEventHandler implements EventHandler<PaymentEvent, TransactionEvent> {
 
-    private final OrderPurchaseRepository orderPurchaseRepository;
+    private final TransactionRepository transactionRepository;
     private final Scheduler jdbcScheduler;
 
     @Autowired
     public PaymentEventHandler(
-            OrderPurchaseRepository orderPurchaseRepository,
+            TransactionRepository transactionRepository,
             Scheduler jdbcScheduler) {
-        this.orderPurchaseRepository = orderPurchaseRepository;
+        this.transactionRepository = transactionRepository;
         this.jdbcScheduler = jdbcScheduler;
     }
 
     @Transactional
-    public void process(PaymentEvent paymentEvent) {
-        Mono.fromRunnable(
-                () -> orderPurchaseRepository.findById(paymentEvent.getOrderId())
-                        .ifPresent(order -> {
-                            order.setStatus(APPROVED.equals(paymentEvent.getStatus())
-                                    ? ORDER_COMPLETED
-                                    : ORDER_FAILED);
-                            orderPurchaseRepository.save(order);
-                        }))
+    public TransactionEvent process(PaymentEvent paymentEvent) {
+        Mono.fromRunnable(() -> transactionRepository.save(
+                new Transaction()
+                        .setOrderId(paymentEvent.getOrderId())
+                        .setPrice(paymentEvent.getPrice())))
                 .subscribeOn(jdbcScheduler)
                 .subscribe();
-    }
 
+        return new TransactionEvent()
+                .orderId(paymentEvent.getOrderId())
+                .status(() -> APPROVED.equals(paymentEvent.getStatus())
+                        ? SUCCESSFUL
+                        : UNSUCCESSFUL);
+
+    }
 }

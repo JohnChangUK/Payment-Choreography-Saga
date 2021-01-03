@@ -1,21 +1,32 @@
 package payment.saga.order.model;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.ToString;
 import payment.saga.order.enums.PaymentStatus;
 
-@Data
 @ToString
+@Getter
 public class PaymentEvent {
 
     private Integer orderId;
     private PaymentStatus status;
+    private Integer price;
 
     public PaymentEvent() {
     }
 
-    public PaymentEvent(Integer orderId) {
+    public PaymentEvent orderId(Integer orderId) {
         this.orderId = orderId;
+        return this;
     }
 
+    public PaymentEvent status(PaymentStatus status) {
+        this.status = status;
+        return this;
+    }
+
+    public PaymentEvent price(Integer price) {
+        this.price = price;
+        return this;
+    }
 }
