@@ -16,8 +16,9 @@ import reactor.util.function.Tuple2;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
+
+import static payment.saga.order.util.Utils.PRODUCT_PRICES;
 
 @Service
 public class OrderService {
@@ -74,9 +75,4 @@ public class OrderService {
                 .setStatus(OrderStatus.ORDER_CREATED);
     }
 
-    private static final Map<Integer, Integer> PRODUCT_PRICES = Map.of(
-            1, 50,
-            2, 100,
-            3, 150
-    );
 }
