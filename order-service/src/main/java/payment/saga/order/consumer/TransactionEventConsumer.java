@@ -26,11 +26,11 @@ public class TransactionEventConsumer implements EventConsumer<TransactionEvent>
         this.jdbcScheduler = jdbcScheduler;
     }
 
-    public void process(TransactionEvent transactionEvent) {
+    public void consumeEvent(TransactionEvent event) {
         Mono.fromRunnable(
-                () -> orderPurchaseRepository.findById(transactionEvent.getOrderId())
+                () -> orderPurchaseRepository.findById(event.getOrderId())
                         .ifPresent(order -> {
-                            setStatus(transactionEvent, order);
+                            setStatus(event, order);
                             orderPurchaseRepository.save(order);
                         }))
                 .subscribeOn(jdbcScheduler)

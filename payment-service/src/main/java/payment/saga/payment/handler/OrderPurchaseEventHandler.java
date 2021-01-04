@@ -11,13 +11,13 @@ import static payment.saga.payment.util.Utils.USER_BALANCE;
 @Component
 public class OrderPurchaseEventHandler implements EventHandler<OrderPurchaseEvent, PaymentEvent> {
 
-    public PaymentEvent process(OrderPurchaseEvent orderPurchaseEvent) {
-        Integer orderPrice = orderPurchaseEvent.getPrice();
-        Integer userId = orderPurchaseEvent.getUserId();
+    public PaymentEvent handleEvent(OrderPurchaseEvent event) {
+        Integer orderPrice = event.getPrice();
+        Integer userId = event.getUserId();
         Integer userBalance = USER_BALANCE.get(userId);
         PaymentEvent paymentEvent = new PaymentEvent()
-                .orderId(orderPurchaseEvent.getOrderId())
-                .price(orderPurchaseEvent.getPrice());
+                .orderId(event.getOrderId())
+                .price(event.getPrice());
         if (userBalance >= orderPrice) {
             USER_BALANCE.computeIfPresent(userId,
                     (user, balance) -> balance - orderPrice);

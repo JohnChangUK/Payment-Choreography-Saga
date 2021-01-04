@@ -3,7 +3,7 @@ package payment.saga.order.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import payment.saga.order.consumer.TransactionEventConsumer;
+import payment.saga.order.consumer.EventConsumer;
 import payment.saga.order.model.OrderPurchaseEvent;
 import payment.saga.order.model.TransactionEvent;
 import reactor.core.publisher.Flux;
@@ -15,11 +15,11 @@ import java.util.function.Supplier;
 @Configuration
 public class OrderServiceConfig {
 
-    private final TransactionEventConsumer transactionEventHandler;
+    private final EventConsumer<TransactionEvent> transactionEventConsumer;
 
     @Autowired
-    public OrderServiceConfig(TransactionEventConsumer transactionEventHandler) {
-        this.transactionEventHandler = transactionEventHandler;
+    public OrderServiceConfig(EventConsumer<TransactionEvent> transactionEventConsumer) {
+        this.transactionEventConsumer = transactionEventConsumer;
     }
 
     @Bean
@@ -30,14 +30,14 @@ public class OrderServiceConfig {
     }
 
     @Bean
-    public Supplier<Flux<OrderPurchaseEvent>> orderEventPublisher(
-            Sinks.Many<OrderPurchaseEvent> processor) {
-        return processor::asFlux;
+    public Supplier<Flux<OrderPurchaseEvent>> orderPurchaseEventPublisher(
+            Sinks.Many<OrderPurchaseEvent> publisher) {
+        return publisher::asFlux;
     }
 
     @Bean
     public Consumer<TransactionEvent> transactionEventProcessor() {
-        return transactionEventHandler::process;
+        return transactionEventConsumer::consumeEvent;
     }
 
 }

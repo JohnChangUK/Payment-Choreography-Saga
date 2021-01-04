@@ -6,7 +6,9 @@ import payment.saga.order.enums.PaymentStatus;
 
 @ToString
 @Getter
-public class PaymentEvent {
+public class PaymentEvent implements Event {
+
+    private static final String EVENT = "Payment";
 
     private Integer orderId;
     private PaymentStatus status;
@@ -29,4 +31,10 @@ public class PaymentEvent {
         this.price = price;
         return this;
     }
+
+    @Override
+    public String getEvent() {
+        return EVENT;
+    }
+
 }

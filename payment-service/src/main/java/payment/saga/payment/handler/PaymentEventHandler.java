@@ -30,17 +30,17 @@ public class PaymentEventHandler implements EventHandler<PaymentEvent, Transacti
     }
 
     @Transactional
-    public TransactionEvent process(PaymentEvent paymentEvent) {
+    public TransactionEvent handleEvent(PaymentEvent event) {
         Mono.fromRunnable(() -> transactionRepository.save(
                 new Transaction()
-                        .setOrderId(paymentEvent.getOrderId())
-                        .setPrice(paymentEvent.getPrice())))
+                        .setOrderId(event.getOrderId())
+                        .setPrice(event.getPrice())))
                 .subscribeOn(jdbcScheduler)
                 .subscribe();
 
         return new TransactionEvent()
-                .orderId(paymentEvent.getOrderId())
-                .status(() -> APPROVED.equals(paymentEvent.getStatus())
+                .orderId(event.getOrderId())
+                .status(() -> APPROVED.equals(event.getStatus())
                         ? SUCCESSFUL
                         : UNSUCCESSFUL);
 

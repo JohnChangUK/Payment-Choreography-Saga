@@ -1,6 +1,8 @@
 package payment.saga.order.consumer;
 
-public interface EventConsumer<T> {
+import payment.saga.order.model.Event;
 
-    void process(T t);
+public interface EventConsumer<T extends Event> {
+
+    void consumeEvent(T event);
 }

@@ -5,9 +5,9 @@ spring:
   cloud:
     stream:
       function:
-        definition: orderEventPublisher;transactionEventProcessor;
+        definition: orderPurchaseEventPublisher;transactionEventProcessor;
       bindings:
-        orderEventPublisher-out-0:
+        orderPurchaseEventPublisher-out-0:
           destination: orders
         transactionEventProcessor-in-0:
           destination: transactions

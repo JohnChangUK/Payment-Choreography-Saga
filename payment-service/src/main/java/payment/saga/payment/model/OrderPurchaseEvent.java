@@ -3,7 +3,9 @@ package payment.saga.payment.model;
 import lombok.Data;
 
 @Data
-public class OrderPurchaseEvent {
+public class OrderPurchaseEvent implements Event {
+
+    private static final String EVENT = "OrderPurchase";
 
     private Integer orderId;
     private Integer userId;
@@ -22,5 +24,10 @@ public class OrderPurchaseEvent {
     public OrderPurchaseEvent setPrice(Integer price) {
         this.price = price;
         return this;
+    }
+
+    @Override
+    public String getEvent() {
+        return EVENT;
     }
 }

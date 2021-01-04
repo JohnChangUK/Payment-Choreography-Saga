@@ -1,6 +1,8 @@
 package payment.saga.payment.handler;
 
-public interface EventHandler<I, O> {
+import payment.saga.payment.model.Event;
 
-    O process(I input);
+public interface EventHandler<T extends Event, R extends Event> {
+
+    R handleEvent(T event);
 }

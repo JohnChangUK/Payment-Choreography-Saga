@@ -8,7 +8,9 @@ import java.util.function.Supplier;
 
 @ToString
 @Getter
-public class TransactionEvent {
+public class TransactionEvent implements Event {
+
+    private static final String EVENT = "Transaction";
 
     private Integer orderId;
     private TransactionStatus status;
@@ -25,4 +27,10 @@ public class TransactionEvent {
         this.status = status.get();
         return this;
     }
+
+    @Override
+    public String getEvent() {
+        return EVENT;
+    }
+
 }
