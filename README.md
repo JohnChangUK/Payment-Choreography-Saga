@@ -1,5 +1,5 @@
 ## [Choreography Saga Pattern](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/saga/saga) - Payment Microservices
-
+### [Medium Article](https://medium.com/@johnchang94/choreography-saga-pattern-with-spring-cloud-kafka-ad46f01fc30a) - Explanation In Depth
 ### Implemented with 
 - Spring Cloud Stream with Apache Kafka Binder
 - Reactive Spring
