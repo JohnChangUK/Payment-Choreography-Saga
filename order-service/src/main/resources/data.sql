@@ -9,4 +9,6 @@ CREATE TABLE products (
 INSERT INTO products (product_id, price) VALUES
   (1, 50.00),
   (2, 75.00),
-  (3, 100.00);
+  (3, 100.00),
+  (4, 500.00),
+  (5, 1000.00);

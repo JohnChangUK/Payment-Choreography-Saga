@@ -9,4 +9,6 @@ CREATE TABLE users (
 INSERT INTO users (user_id, balance) VALUES
   (1, 100.00),
   (2, 200.00),
-  (3, 500.00);
+  (3, 500.00),
+  (4, 1000.00),
+  (5, 2000.00);
