@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import payment.saga.payment.model.OrderPurchaseEvent;
 import payment.saga.payment.model.PaymentEvent;
+import payment.saga.payment.model.User;
 import payment.saga.payment.repository.UserRepository;
 
 import javax.transaction.Transactional;
@@ -29,16 +30,19 @@ public class OrderPurchaseEventHandler implements EventHandler<OrderPurchaseEven
                 .orderId(event.getOrderId())
                 .price(event.getPrice())
                 .status(DECLINED);
-        userRepository.findById(userId)
-                .ifPresent(user -> {
-                    double userBalance = user.getBalance();
-                    if (userBalance >= orderPrice) {
-                        user.setBalance(userBalance - orderPrice);
-                        userRepository.save(user);
-                        paymentEvent.status(APPROVED);
-                    }
-                });
+        userRepository
+                .findById(userId)
+                .ifPresent(user -> deductUserBalance(orderPrice, paymentEvent, user));
         return paymentEvent;
+    }
+
+    private void deductUserBalance(double orderPrice, PaymentEvent paymentEvent, User user) {
+        double userBalance = user.getBalance();
+        if (userBalance >= orderPrice) {
+            user.setBalance(userBalance - orderPrice);
+            userRepository.save(user);
+            paymentEvent.status(APPROVED);
+        }
     }
 
 }
