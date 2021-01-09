@@ -40,7 +40,9 @@ public class PaymentEventHandler implements EventHandler<PaymentEvent, Transacti
 
         return new TransactionEvent()
                 .orderId(event.getOrderId())
-                .status(APPROVED.equals(event.getStatus()) ? SUCCESSFUL : UNSUCCESSFUL);
+                .status(APPROVED.equals(event.getStatus())
+                        ? SUCCESSFUL
+                        : UNSUCCESSFUL);
 
     }
 }
