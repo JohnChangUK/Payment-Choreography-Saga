@@ -9,7 +9,7 @@ public class OrderPurchaseEvent implements Event {
 
     private Integer orderId;
     private Integer userId;
-    private Integer price;
+    private double price;
 
     public OrderPurchaseEvent setOrderId(Integer orderId) {
         this.orderId = orderId;
@@ -21,7 +21,7 @@ public class OrderPurchaseEvent implements Event {
         return this;
     }
 
-    public OrderPurchaseEvent setPrice(Integer price) {
+    public OrderPurchaseEvent setPrice(double price) {
         this.price = price;
         return this;
     }

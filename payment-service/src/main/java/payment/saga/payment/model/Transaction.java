@@ -18,7 +18,7 @@ public class Transaction {
     @GeneratedValue
     private Integer id;
     private Integer orderId;
-    private Integer price;
+    private double price;
 
     public Transaction() {
     }
@@ -28,7 +28,7 @@ public class Transaction {
         return this;
     }
 
-    public Transaction setPrice(Integer price) {
+    public Transaction setPrice(double price) {
         this.price = price;
         return this;
     }

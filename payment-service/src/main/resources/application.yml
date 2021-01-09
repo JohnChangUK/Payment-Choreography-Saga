@@ -16,7 +16,7 @@ spring:
         paymentEventSubscriber-out-0:
           destination: transactions
   datasource:
-    url: jdbc:h2:mem:mydb;DB_CLOSE_DELAY=-1
+    url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
     username: sa
     password:

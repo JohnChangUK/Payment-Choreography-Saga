@@ -21,7 +21,7 @@ public class OrderPurchase {
     private Integer id;
     private Integer userId;
     private Integer productId;
-    private Integer price;
+    private double price;
     private OrderStatus status;
 
     public OrderPurchase setUserId(Integer userId) {
@@ -34,7 +34,7 @@ public class OrderPurchase {
         return this;
     }
 
-    public OrderPurchase setPrice(Integer price) {
+    public OrderPurchase setPrice(double price) {
         this.price = price;
         return this;
     }

@@ -12,7 +12,7 @@ public class PaymentEvent implements Event {
 
     private Integer orderId;
     private PaymentStatus status;
-    private Integer price;
+    private double price;
 
     public PaymentEvent() {
     }
@@ -27,7 +27,7 @@ public class PaymentEvent implements Event {
         return this;
     }
 
-    public PaymentEvent price(Integer price) {
+    public PaymentEvent price(double price) {
         this.price = price;
         return this;
     }

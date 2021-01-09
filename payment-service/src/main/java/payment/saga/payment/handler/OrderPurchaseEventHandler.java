@@ -1,29 +1,44 @@
 package payment.saga.payment.handler;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import payment.saga.payment.model.OrderPurchaseEvent;
 import payment.saga.payment.model.PaymentEvent;
+import payment.saga.payment.repository.UserRepository;
+
+import javax.transaction.Transactional;
 
 import static payment.saga.payment.enums.PaymentStatus.APPROVED;
 import static payment.saga.payment.enums.PaymentStatus.DECLINED;
-import static payment.saga.payment.util.Utils.USER_BALANCE;
 
 @Component
 public class OrderPurchaseEventHandler implements EventHandler<OrderPurchaseEvent, PaymentEvent> {
 
+    private final UserRepository userRepository;
+
+    @Autowired
+    public OrderPurchaseEventHandler(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Transactional
     public PaymentEvent handleEvent(OrderPurchaseEvent event) {
-        Integer orderPrice = event.getPrice();
+        double orderPrice = event.getPrice();
         Integer userId = event.getUserId();
-        Integer userBalance = USER_BALANCE.get(userId);
         PaymentEvent paymentEvent = new PaymentEvent()
                 .orderId(event.getOrderId())
-                .price(event.getPrice());
-        if (userBalance >= orderPrice) {
-            USER_BALANCE.computeIfPresent(userId,
-                    (user, balance) -> balance - orderPrice);
-            return paymentEvent.status(APPROVED);
-        }
-        return paymentEvent.status(DECLINED);
+                .price(event.getPrice())
+                .status(DECLINED);
+        userRepository.findById(userId)
+                .ifPresent(user -> {
+                    double userBalance = user.getBalance();
+                    if (userBalance >= orderPrice) {
+                        user.setBalance(userBalance - orderPrice);
+                        userRepository.save(user);
+                        paymentEvent.status(APPROVED);
+                    }
+                });
+        return paymentEvent;
     }
 
 }

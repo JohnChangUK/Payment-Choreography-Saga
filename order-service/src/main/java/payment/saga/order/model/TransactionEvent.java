@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.ToString;
 import payment.saga.order.enums.TransactionStatus;
 
-import java.util.function.Supplier;
-
 @ToString
 @Getter
 public class TransactionEvent implements Event {
@@ -23,8 +21,8 @@ public class TransactionEvent implements Event {
         return this;
     }
 
-    public TransactionEvent status(Supplier<TransactionStatus> status) {
-        this.status = status.get();
+    public TransactionEvent status(TransactionStatus status) {
+        this.status = status;
         return this;
     }
 

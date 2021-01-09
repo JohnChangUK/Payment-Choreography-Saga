@@ -9,6 +9,7 @@ import payment.saga.order.model.Order;
 import payment.saga.order.model.OrderPurchase;
 import payment.saga.order.processor.OrderPurchaseProcessor;
 import payment.saga.order.repository.OrderPurchaseRepository;
+import payment.saga.order.repository.ProductRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
@@ -18,22 +19,22 @@ import java.time.Duration;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static payment.saga.order.util.Utils.PRODUCT_PRICES;
-
 @Service
 public class OrderService {
 
     private final OrderPurchaseRepository orderPurchaseRepository;
     private final OrderPurchaseProcessor orderPurchaseProcessor;
+    private final ProductRepository productRepository;
     private final Scheduler jdbcScheduler;
 
     @Autowired
     public OrderService(
             OrderPurchaseRepository orderPurchaseRepository,
             OrderPurchaseProcessor orderPurchaseProcessor,
-            Scheduler jdbcScheduler) {
+            ProductRepository productRepository, Scheduler jdbcScheduler) {
         this.orderPurchaseRepository = orderPurchaseRepository;
         this.orderPurchaseProcessor = orderPurchaseProcessor;
+        this.productRepository = productRepository;
         this.jdbcScheduler = jdbcScheduler;
     }
 
@@ -67,10 +68,14 @@ public class OrderService {
     }
 
     private OrderPurchase getOrderPurchase(final Order order) {
+        Integer productId = order.getProductId();
         return new OrderPurchase()
-                .setProductId(order.getProductId())
+                .setProductId(productId)
                 .setUserId(order.getUserId())
-                .setPrice(PRODUCT_PRICES.get(order.getProductId()))
+                .setPrice(productRepository.findById(productId)
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND, "Product ID: " + productId + " does not exist"))
+                        .getPrice())
                 .setStatus(OrderStatus.CREATED);
     }
 
