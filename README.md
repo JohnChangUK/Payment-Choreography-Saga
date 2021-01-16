@@ -5,7 +5,13 @@
 - Reactive Spring
 - Using reactive programming to return `Flux` from the blocking JDBC API.
 
-The point is to have a dedicated, well-tuned thread pool and isolate the blocking code there.
+Operations persising to the database have a dedicated, well-tuned thread pool as it can isolate blocking IO calls separately from the application.
+
+### System Design
+
+<p>
+    <img src="Choreography Saga.jpg" width="1200" height="600" />
+</p>
 
 #### To start ZooKeeper and Kafka Brokers
 ```
