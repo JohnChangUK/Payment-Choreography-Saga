@@ -2,8 +2,8 @@
 ### [Medium Article](https://medium.com/@johnchang94/choreography-saga-pattern-with-spring-cloud-kafka-ad46f01fc30a) - Explanation In Depth
 ### Implemented with 
 - Spring Cloud Stream with Apache Kafka Binder
-- Reactive Spring
-- Using reactive programming to return `Flux` from the blocking JDBC API.
+- Spring WebFlux
+- Leveraging Netty's non-blocking model
 
 Operations persising to the database have a dedicated, well-tuned thread pool as it can isolate blocking IO calls separately from the application.
 
