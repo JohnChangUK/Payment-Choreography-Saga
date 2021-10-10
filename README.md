@@ -3,7 +3,7 @@
 ### Implemented with 
 - Spring Cloud Stream with Apache Kafka Binder
 - Spring WebFlux
-- Leveraging Netty's non-blocking model
+- Leveraging Netty's non-blocking server model
 
 Operations persising to the database have a dedicated, well-tuned thread pool as it can isolate blocking IO calls separately from the application.
 
